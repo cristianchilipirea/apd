@@ -55,14 +55,10 @@ void printPartial()
 void printAll()
 {
 	int i;
-<<<<<<< HEAD
 	for(i = 0; i < N; i++)
 		printf("%i ", c[i]);
 	printf("\n");
 }
-=======
-	pthread_t tid[P];
->>>>>>> parent of 792372b... added makefile
 
 void print()
 {
@@ -80,23 +76,9 @@ int main(int argc, char *argv[])
 	getArgs(argc, argv);
 	init();
 
-<<<<<<< HEAD
 	for(j = 0; j < NReps; j++)
 		for(i = 0; i < N; i++)
 			c[i] = a[i] + b[i];
-=======
-	int thread_id[P];
-	for(i = 0;i < P; i++)
-		thread_id[i] = i;
-
-	for(i = 0; i < P; i++) {
-		pthread_create(&(tid[i]), NULL, threadFunction, &(thread_id[i]));
-	}
-
-	for(i = 0; i < P; i++) {
-		pthread_join(tid[i], NULL);
-	}
->>>>>>> parent of 792372b... added makefile
 
 	print();
 
