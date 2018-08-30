@@ -3,22 +3,44 @@
 #include <pthread.h>
 #include <math.h>
 
+
+int P;
+int N;
 int NReps;
 int printLevel;
-int N;
 int* a;
 int* b;
 int* c;
 
+#define min(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
+
 void getArgs(int argc, char **argv)
 {
-	if(argc < 4) {
-		printf("Not enough paramters: ./addTwoVectors N NReps printLevel\nprintLevel: 0=no, 1=some, 2=verbouse\n");
+	if(argc < 5) {
+		printf("Not enough paramters: ./addTwoVectors N NReps printLevel P\nprintLevel: 0=no, 1=some, 2=verbouse\nP: number of threads\n");
 		exit(1);
 	}
 	N = atoi(argv[1]);
 	NReps = atoi(argv[2]);
 	printLevel = atoi(argv[3]);
+	P = atoi(argv[4]);
+}
+
+void* threadFunction(void *var)
+{
+	int thread_id = *(int*)var;
+
+	int start = thread_id * ceil((double)N / P);
+	int end = (thread_id + 1) * ceil((double)N / P);
+	int i;
+	int j;
+	for(j = 0; j < NReps; j++)
+		for(i = start; i < min(end, N); i++)
+			c[i] = a[i] + b[i];
+	return NULL;
 }
 
 void init()
@@ -55,36 +77,30 @@ void printPartial()
 void printAll()
 {
 	int i;
-<<<<<<< HEAD
 	for(i = 0; i < N; i++)
 		printf("%i ", c[i]);
 	printf("\n");
 }
-=======
-	pthread_t tid[P];
->>>>>>> parent of 792372b... added makefile
 
 void print()
 {
+	
 	if(printLevel == 0)
 		return;
-	else if(printLevel == 1)
+	if(printLevel == 1) {
 		printPartial();
-	else
+	} else {
 		printAll();
+	}
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-	int i, j;
+	int i;
+	pthread_t tid[P];
 	getArgs(argc, argv);
 	init();
 
-<<<<<<< HEAD
-	for(j = 0; j < NReps; j++)
-		for(i = 0; i < N; i++)
-			c[i] = a[i] + b[i];
-=======
 	int thread_id[P];
 	for(i = 0;i < P; i++)
 		thread_id[i] = i;
@@ -96,7 +112,6 @@ int main(int argc, char *argv[])
 	for(i = 0; i < P; i++) {
 		pthread_join(tid[i], NULL);
 	}
->>>>>>> parent of 792372b... added makefile
 
 	print();
 
